@@ -58,16 +58,16 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
     }
 
     this.isLoading = true;
-    // Node.js API'sine istek gönder
+    // Yeni oluşturulan API'ye istek gönder - tüm öğrencileri getirir
     this.http
-      .get<any>('./server/api/ogrenci_bilgileri.php', {
+      .get<any>('./server/api/ogrenciler_listesi.php', {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe({
         next: (response) => {
           if (response.success) {
-            // API tüm kullanıcıları döndürüyor varsayalım
-            const users = Array.isArray(response.data) ? response.data : [response.data];
+            // API yanıtından gelen veriyi al
+            const users = Array.isArray(response.data) ? response.data : [];
             
             // Kullanıcıları rütbelerine göre filtrele
             this.students = users.filter(
