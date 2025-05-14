@@ -2,3 +2,32 @@ modules = ["nodejs-20", "web", "php-8.2"]
 
 [nix]
 channel = "stable-24_05"
+
+[workflows]
+runButton = "Run Angular & Node"
+
+[[workflows.workflow]]
+name = "Run Angular & Node"
+author = 99479
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd server && npm run start"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd kimyaogreniyorum && npm run start"
+
+[[workflows.workflow]]
+name = "Dev Environment"
+author = 99479
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd server && npm run dev"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd kimyaogreniyorum && npm run watch"
