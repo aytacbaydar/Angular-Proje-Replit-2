@@ -46,37 +46,58 @@ class OgrenciListesiSayfasiComponent implements OnInit {
   setActiveTab(tab: 'students' | 'teachers' | 'new'): void {
     this.activeTab = tab;
   }
-  
+
   // Öğrenci silme işlemi
   deleteStudent(id: number): void {
-    if (confirm('Bu öğrenciyi silmek istediğinize emin misiniz?')) {
-      // LocalStorage veya sessionStorage'dan token'ı al
-      let token = '';
-      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        token = user.token || '';
+    if(confirm('Bu öğrenciyi silmek istediğinize emin misiniz?')) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        this.router.navigate(['/giris']);
+        return;
       }
 
-      this.http
-        .delete(`./server/api/ogrenci_sil.php/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .subscribe({
-          next: (response: any) => {
-            if (response.success) {
-              // Silinen öğrenciyi listeden kaldır
-              this.students = this.students.filter(student => student.id !== id);
-              alert('Öğrenci başarıyla silindi.');
-            } else {
-              alert(`Hata: ${response.message}`);
-            }
-          },
-          error: (error) => {
-            console.error('Öğrenci silinirken hata oluştu:', error);
-            alert('Öğrenci silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+
+      // İki farklı silme yöntemi deneme (URL parametresi ve body ile)
+      this.http.delete(`./server/api/ogrenci_sil.php/${id}`, {
+        headers: headers
+      }).subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            // Listeyi güncelle
+            this.students = this.students.filter(student => student.id !== id);
+            this.toastr.success('Öğrenci başarıyla silindi.');
+          } else {
+            this.toastr.error(`Hata: ${response.error}`);
           }
-        });
+        },
+        error: (error) => {
+          console.error('Öğrenci silinirken hata oluştu:', error);
+
+          // Alternatif silme yöntemi deneme
+          this.http.delete(`./server/api/ogrenci_sil.php`, {
+            headers: headers,
+            body: { id: id }
+          }).subscribe({
+            next: (response: any) => {
+              if (response.success) {
+                // Listeyi güncelle
+                this.students = this.students.filter(student => student.id !== id);
+                this.toastr.success('Öğrenci başarıyla silindi.');
+              } else {
+                this.toastr.error(`Hata: ${response.error}`);
+              }
+            },
+            error: (err) => {
+              console.error('İkinci silme denemesi de başarısız:', err);
+              this.toastr.error('Öğrenci silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+          });
+        }
+      });
     }
   }
 
@@ -141,7 +162,7 @@ class OgrenciListesiSayfasiComponent implements OnInit {
             const user = this.newUsers.find(u => u.id === id);
             if (user) {
               this.newUsers = this.newUsers.filter(u => u.id !== id);
-              
+
               // Kullanıcıyı ilgili listeye ekle
               if (user.rutbe === 'ogrenci') {
                 user.aktif = true;

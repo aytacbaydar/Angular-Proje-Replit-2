@@ -3,6 +3,12 @@
 // Kullanıcı güncelleme API'si
 require_once '../config.php';
 
+// OPTIONS isteğini işle (CORS için)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 // PUT isteği: Kullanıcı bilgilerini güncelle
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     try {
