@@ -1,0 +1,101 @@
+PS D:\Web Sayfalarım\Template\Angular-Proje-Replit-2\kimyaogreniyorum> ng build
+Application bundle generation failed. [2.093 seconds]
+
+X [ERROR] TS-996002: This import contains errors, which may affect components that depend on this NgModule. [plugin angular-compiler]
+
+    src/app/app.module.ts:33:4:
+      33 │     YoneticiSayfasiModule
+         ╵     ~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'. [plugin angular-compiler]
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-giris-sayfasi/ogrenci-giris-sayfasi.component.html:10:14:
+      10 │         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+         ╵               ~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciGirisSayfasiComponent.
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-giris-sayfasi/ogrenci-giris-sayfasi.component.ts:12:15:
+      12 │   templateUrl: './ogrenci-giris-sayfasi.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngClass' since it isn't a known property of 'div'. [plugin angular-compiler]
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-giris-sayfasi/ogrenci-giris-sayfasi.component.html:64:32:
+      64 │         <div class="toast-icon" [ngClass]="toastType">
+         ╵                                 ~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciGirisSayfasiComponent.
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-giris-sayfasi/ogrenci-giris-sayfasi.component.ts:12:15:
+      12 │   templateUrl: './ogrenci-giris-sayfasi.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'. [plugin angular-compiler]
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-kayit-sayfasi/ogrenci-kayit-sayfasi.component.html:10:14:
+      10 │         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit(...
+         ╵               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciKayitSayfasiComponent.
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-kayit-sayfasi/ogrenci-kayit-sayfasi.component.ts:10:15:
+      10 │   templateUrl: './ogrenci-kayit-sayfasi.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngClass' since it isn't a known property of 'div'. [plugin angular-compiler]
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-kayit-sayfasi/ogrenci-kayit-sayfasi.component.html:81:55:
+      81 │ ...class="strength-fill" [ngClass]="passwordStrength.cssClass"></div>
+         ╵                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciKayitSayfasiComponent.
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-kayit-sayfasi/ogrenci-kayit-sayfasi.component.ts:10:15:
+      10 │   templateUrl: './ogrenci-kayit-sayfasi.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngClass' since it isn't a known property of 'div'. [plugin angular-compiler]
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-kayit-sayfasi/ogrenci-kayit-sayfasi.component.html:104:32:
+      104 │         <div class="toast-icon" [ngClass]="toastType">
+          ╵                                 ~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciKayitSayfasiComponent.
+
+    src/app/components/index-sayfasi/giris-kayit-islemeleri/ogrenci-kayit-sayfasi/ogrenci-kayit-sayfasi.component.ts:10:15:
+      10 │   templateUrl: './ogrenci-kayit-sayfasi.component.html',
+         ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-996008: Component OgrenciListesiSayfasiComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead? [plugin angular-compiler]       
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:15:4:
+      15 │     OgrenciListesiSayfasiComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-996008: Component OgrenciDetaySayfasiComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead? [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:16:4:
+      16 │     OgrenciDetaySayfasiComponent
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-996004: Can't be exported from this NgModule, as it must be imported first [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:27:4:
+      27 │     OgrenciListesiSayfasiComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-996004: Can't be exported from this NgModule, as it must be imported first [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:28:4:
+      28 │     OgrenciDetaySayfasiComponent
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
