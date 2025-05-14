@@ -1,132 +1,50 @@
-
 <div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="page-header d-flex justify-content-between align-items-center">
-                <h1>Öğrenci Listesi</h1>
-                <div class="d-flex">
-                    <a routerLink="/yonetici-sayfasi/ogrenci-kayit-sayfasi" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Yeni Öğrenci Ekle
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="dashboard-header">
+        <h2>Kullanıcı Yönetimi</h2>
+        <p>Öğrenci ve öğretmen bilgilerini yönetin</p>
     </div>
 
-    <!-- İstatistik Kartları -->
-    <div class="row mb-4">
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-bg bg-primary">
-                        <i class="bi bi-people text-white"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="card-subtitle mb-1 text-muted">Toplam Öğrenci</h6>
-                        <h3 class="card-title mb-0">{{ students.length }}</h3>
-                    </div>
-                </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="nav nav-tabs card-header-tabs" role="tablist">
+                <button class="nav-link" [class.active]="activeTab === 'students'" 
+                        (click)="setActiveTab('students')">
+                    <i class="bi bi-mortarboard"></i> Öğrenciler
+                    <span class="badge bg-primary">{{ students.length }}</span>
+                </button>
+                <button class="nav-link" [class.active]="activeTab === 'teachers'" 
+                        (click)="setActiveTab('teachers')">
+                    <i class="bi bi-person-video3"></i> Öğretmenler
+                    <span class="badge bg-success">{{ teachers.length }}</span>
+                </button>
+                <button class="nav-link" [class.active]="activeTab === 'new'" 
+                        (click)="setActiveTab('new')">
+                    <i class="bi bi-person-plus"></i> Yeni Kullanıcılar
+                    <span class="badge bg-warning">{{ newUsers.length }}</span>
+                </button>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-bg bg-success">
-                        <i class="bi bi-check-circle text-white"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="card-subtitle mb-1 text-muted">Aktif Öğrenci</h6>
-                        <h3 class="card-title mb-0">{{ students.filter(s => s.aktif == 1).length }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-bg bg-warning">
-                        <i class="bi bi-clock-history text-white"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="card-subtitle mb-1 text-muted">Onay Bekleyen</h6>
-                        <h3 class="card-title mb-0">{{ students.filter(s => s.aktif == 0).length }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body d-flex align-items-center">
-                    <div class="icon-bg bg-info">
-                        <i class="bi bi-person-video3 text-white"></i>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="card-subtitle mb-1 text-muted">Öğretmen Sayısı</h6>
-                        <h3 class="card-title mb-0">{{ teachers.length || 0 }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filtre ve Arama -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="İsim, email veya telefon ile ara..." 
-                                       [(ngModel)]="searchText">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" [(ngModel)]="statusFilter">
-                                <option value="all">Tüm Durumlar</option>
-                                <option value="active">Aktif</option>
-                                <option value="pending">Onay Bekleyen</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" [(ngModel)]="groupFilter">
-                                <option value="all">Tüm Gruplar</option>
-                                <option value="A">A Grubu</option>
-                                <option value="B">B Grubu</option>
-                                <option value="C">C Grubu</option>
-                                <option value="D">D Grubu</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Öğrenci Tablosu -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+        <div class="card-body">
+            <div class="tab-content">
+                <!-- Öğrenciler Tablosu -->
+                <div [class.active]="activeTab === 'students'" [class.show]="activeTab === 'students'" class="tab-pane fade" [class.show]="activeTab === 'students'">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#ID</th>
                                     <th>Avatar</th>
                                     <th>Ad Soyad</th>
-                                    <th>Email</th>
+                                    <th>E-posta</th>
                                     <th>Telefon</th>
                                     <th>Okul</th>
                                     <th>Sınıf</th>
                                     <th>Grup</th>
-                                    <th>Durum</th>
                                     <th>İşlemler</th>
                                 </tr>
                             </thead>
-                            <tbody *ngIf="!isLoading">
-                                <tr *ngFor="let student of filteredStudents()">
+                            <tbody>
+                                <tr *ngFor="let student of students">
                                     <td>{{ student.id }}</td>
                                     <td>
                                         <img [src]="student.avatar || 'https://ui-avatars.com/api/?name=' + student.adi_soyadi + '&background=random'" 
@@ -139,70 +57,120 @@
                                     <td>{{ student.sinifi || 'Belirtilmemiş' }}</td>
                                     <td>{{ student.grubu || 'Belirtilmemiş' }}</td>
                                     <td>
-                                        <span *ngIf="student.aktif == 1" class="badge bg-success">Aktif</span>
-                                        <span *ngIf="student.aktif == 0" class="badge bg-warning">Onay Bekliyor</span>
-                                    </td>
-                                    <td>
                                         <div class="btn-group">
-                                            <a [routerLink]="['/yonetici-sayfasi/ogrenci-detay-sayfasi', student.id]" 
-                                               class="btn btn-sm btn-outline-primary" title="Düzenle">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <button *ngIf="student.aktif == 0" 
-                                                    (click)="approveStudent(student.id)" 
-                                                    class="btn btn-sm btn-outline-success" 
-                                                    title="Onayla">
-                                                <i class="bi bi-check-lg"></i>
+                                            <button class="btn btn-sm btn-primary" [routerLink]="['/yonetici-sayfasi/ogrenci-detay', student.id]">
+                                                <i class="bi bi-pencil-square"></i>
                                             </button>
-                                            <button (click)="deleteStudent(student.id)" 
-                                                    class="btn btn-sm btn-outline-danger" 
-                                                    title="Sil">
+                                            <button class="btn btn-sm btn-danger" (click)="deleteStudent(student.id)">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr *ngIf="filteredStudents().length === 0">
-                                    <td colspan="10" class="text-center">
-                                        <div class="py-5">
-                                            <i class="bi bi-search fs-1 text-muted"></i>
-                                            <p class="mt-3 mb-0">Öğrenci bulunamadı.</p>
-                                        </div>
-                                    </td>
+                                <tr *ngIf="students.length === 0 && !isLoading">
+                                    <td colspan="9" class="text-center py-3">Kayıtlı öğrenci bulunamadı.</td>
                                 </tr>
-                            </tbody>
-                            <tbody *ngIf="isLoading">
-                                <tr>
-                                    <td colspan="10" class="text-center py-5">
-                                        <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Yükleniyor...</span>
-                                        </div>
-                                        <p class="mt-3 mb-0">Öğrenciler yükleniyor...</p>
-                                    </td>
+                                <tr *ngIf="isLoading">
+                                    <td colspan="9" class="text-center py-3">Yükleniyor...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Silme Onay Modalı -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Öğrenci Silme Onayı</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Bu öğrenciyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-danger" (click)="confirmDelete()">Sil</button>
+                <!-- Öğretmenler Tablosu -->
+                <div [class.active]="activeTab === 'teachers'" [class.show]="activeTab === 'teachers'" class="tab-pane fade">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th>Avatar</th>
+                                    <th>Ad Soyad</th>
+                                    <th>E-posta</th>
+                                    <th>Telefon</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let teacher of teachers">
+                                    <td>{{ teacher.id }}</td>
+                                    <td>
+                                        <img [src]="teacher.avatar || 'https://ui-avatars.com/api/?name=' + teacher.adi_soyadi + '&background=random'" 
+                                             class="rounded-circle" width="40" height="40" alt="Avatar">
+                                    </td>
+                                    <td>{{ teacher.adi_soyadi }}</td>
+                                    <td>{{ teacher.email }}</td>
+                                    <td>{{ teacher.cep_telefonu || 'Belirtilmemiş' }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-primary" [routerLink]="['/yonetici-sayfasi/ogretmen-detay', teacher.id]">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" (click)="deleteTeacher(teacher.id)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="teachers.length === 0 && !isLoading">
+                                    <td colspan="6" class="text-center py-3">Kayıtlı öğretmen bulunamadı.</td>
+                                </tr>
+                                <tr *ngIf="isLoading">
+                                    <td colspan="6" class="text-center py-3">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Yeni Kullanıcılar Tablosu -->
+                <div [class.active]="activeTab === 'new'" [class.show]="activeTab === 'new'" class="tab-pane fade">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th>Avatar</th>
+                                    <th>Ad Soyad</th>
+                                    <th>E-posta</th>
+                                    <th>Telefon</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of newUsers">
+                                    <td>{{ user.id }}</td>
+                                    <td>
+                                        <img [src]="user.avatar || 'https://ui-avatars.com/api/?name=' + user.adi_soyadi + '&background=random'" 
+                                             class="rounded-circle" width="40" height="40" alt="Avatar">
+                                    </td>
+                                    <td>{{ user.adi_soyadi }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.cep_telefonu || 'Belirtilmemiş' }}</td>
+                                    <td>{{ user.created_at | date:'dd.MM.yyyy HH:mm' }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-success" (click)="approveUser(user.id)">
+                                                <i class="bi bi-check-circle"></i> Onayla
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" (click)="rejectUser(user.id)">
+                                                <i class="bi bi-x-circle"></i> Reddet
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="newUsers.length === 0 && !isLoading">
+                                    <td colspan="7" class="text-center py-3">Onay bekleyen kullanıcı yok.</td>
+                                </tr>
+                                <tr *ngIf="isLoading">
+                                    <td colspan="7" class="text-center py-3">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
