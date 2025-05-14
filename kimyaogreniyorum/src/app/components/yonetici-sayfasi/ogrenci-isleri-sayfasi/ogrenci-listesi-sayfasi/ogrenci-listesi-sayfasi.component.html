@@ -193,10 +193,10 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-success btn-sm" title="Onayla">
+                                        <button (click)="approveUser(user.id)" class="btn btn-sm btn-outline-success btn-sm" title="Onayla">
                                             <i class="bi bi-check-circle"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger btn-sm" title="Reddet">
+                                        <button (click)="rejectUser(user.id)" class="btn btn-sm btn-outline-danger btn-sm" title="Reddet">
                                             <i class="bi bi-x-circle"></i>
                                         </button>
                                     </div>
