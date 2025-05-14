@@ -163,4 +163,85 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
         },
       });
   }
+
+    // Yeni kullanıcıyı onaylama fonksiyonu
+    approveUser(userId: number) {
+      if (!confirm('Bu kullanıcıyı onaylamak istediğinizden emin misiniz?')) {
+        return;
+      }
+  
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+  
+      // Kullanıcı verilerini hazırla
+      const userData = {
+        id: userId,
+        rutbe: 'ogrenci', // Onaylandığında öğrenci olarak ayarla
+        aktif: 1 // Aktif hesap olarak ayarla
+      };
+  
+      this.http
+        .post<any>('./server/api/kullanici_guncelle.php', userData, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              alert('Kullanıcı başarıyla onaylandı!');
+              this.loadUsers(); // Kullanıcı listesini yeniden yükle
+            } else {
+              alert('Kullanıcı onaylanamadı: ' + response.error);
+            }
+          },
+          error: (error) => {
+            console.error('Onaylama hatası:', error);
+            alert('Onaylama işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
+          },
+        });
+    }
+  
+    // Yeni kullanıcıyı reddetme fonksiyonu
+    rejectUser(userId: number) {
+      if (!confirm('Bu kullanıcıyı reddetmek istediğinizden emin misiniz? Bu işlem kullanıcıyı silecektir.')) {
+        return;
+      }
+  
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+  
+      this.http
+        .post<any>('./server/api/ogrenci_sil.php', { id: userId }, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              alert('Kullanıcı başarıyla reddedildi ve silindi!');
+              this.loadUsers(); // Kullanıcı listesini yeniden yükle
+            } else {
+              alert('Kullanıcı reddedilemedi: ' + response.error);
+            }
+          },
+          error: (error) => {
+            console.error('Reddetme hatası:', error);
+            alert('Reddetme işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
+          },
+        });
+    }
 }
