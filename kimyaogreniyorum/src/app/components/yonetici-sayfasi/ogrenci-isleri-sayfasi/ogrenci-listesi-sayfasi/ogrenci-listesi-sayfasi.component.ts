@@ -98,6 +98,75 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
   editStudent(id: number): void {
     this.router.navigate(['/yonetici-sayfasi/ogrenci-detay-sayfasi', id]);
   }
+  
+  editTeacher(id: number): void {
+    this.router.navigate(['/yonetici-sayfasi/ogrenci-detay-sayfasi', id]);
+  }
+  
+  deleteStudent(id: number): void {
+    if (confirm(`ID: ${id} numaralı öğrenciyi silmek istediğinizden emin misiniz?`)) {
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+      
+      this.http
+        .delete<any>(`./server/api/ogrenci_sil.php/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              alert('Öğrenci başarıyla silindi!');
+              // Listeyi yenile
+              this.loadUsers();
+            } else {
+              alert('Silme işlemi başarısız: ' + response.error);
+            }
+          },
+          error: (error) => {
+            console.error('API hatası:', error);
+            alert('Silme işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
+          },
+        });
+    }
+  }
+  
+  deleteTeacher(id: number): void {
+    if (confirm(`ID: ${id} numaralı öğretmeni silmek istediğinizden emin misiniz?`)) {
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+      
+      this.http
+        .delete<any>(`./server/api/ogrenci_sil.php/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              alert('Öğretmen başarıyla silindi!');
+              // Listeyi yenile
+              this.loadUsers();
+            } else {
+              alert('Silme işlemi başarısız: ' + response.error);
+            }
+          },
+          error: (error) => {
+            console.error('API hatası:', error);
+            alert('Silme işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
+          },
+        });
+    }
+  }i-detay-sayfasi', id]);
+  }
 
   deleteStudent(id: number): void {
     if (confirm('Bu öğrenciyi silmek istediğinizden emin misiniz?')) {
