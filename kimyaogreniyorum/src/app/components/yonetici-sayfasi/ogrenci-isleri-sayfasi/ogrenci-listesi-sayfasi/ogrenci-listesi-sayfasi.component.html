@@ -1,41 +1,88 @@
+
 <div class="container-fluid">
     <div class="dashboard-header">
         <h2>Kullanıcı Yönetimi</h2>
         <p>Öğrenci ve öğretmen bilgilerini yönetin</p>
     </div>
 
+    <!-- Özet Kartları -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card summary-card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Toplam Öğrenci</h6>
+                            <h2 class="card-text">{{ students.length }}</h2>
+                        </div>
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card summary-card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Toplam Öğretmen</h6>
+                            <h2 class="card-text">{{ teachers.length }}</h2>
+                        </div>
+                        <i class="bi bi-person-video3 fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card summary-card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Onay Bekleyen</h6>
+                            <h2 class="card-text">{{ newUsers.length }}</h2>
+                        </div>
+                        <i class="bi bi-person-plus fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header">
-            <div class="nav nav-tabs card-header-tabs" role="tablist">
-                <button class="nav-link" [class.active]="activeTab === 'students'" 
-                        (click)="setActiveTab('students')">
-                    <i class="bi bi-mortarboard"></i> Öğrenciler
-                    <span class="badge bg-primary">{{ students.length }}</span>
-                </button>
-                <button class="nav-link" [class.active]="activeTab === 'teachers'" 
-                        (click)="setActiveTab('teachers')">
-                    <i class="bi bi-person-video3"></i> Öğretmenler
-                    <span class="badge bg-success">{{ teachers.length }}</span>
-                </button>
-                <button class="nav-link" [class.active]="activeTab === 'new'" 
-                        (click)="setActiveTab('new')">
-                    <i class="bi bi-person-plus"></i> Yeni Kullanıcılar
-                    <span class="badge bg-warning">{{ newUsers.length }}</span>
-                </button>
-            </div>
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': activeTab === 'students'}" 
+                            (click)="setActiveTab('students')" type="button">
+                        <i class="bi bi-mortarboard"></i> Öğrenciler
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': activeTab === 'teachers'}" 
+                            (click)="setActiveTab('teachers')" type="button">
+                        <i class="bi bi-person-video3"></i> Öğretmenler
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': activeTab === 'new'}" 
+                            (click)="setActiveTab('new')" type="button">
+                        <i class="bi bi-person-plus"></i> Yeni Kullanıcılar
+                    </button>
+                </li>
+            </ul>
         </div>
         <div class="card-body">
             <div class="tab-content">
                 <!-- Öğrenciler Tablosu -->
-                <div [class.active]="activeTab === 'students'" [class.show]="activeTab === 'students'" class="tab-pane fade" [class.show]="activeTab === 'students'">
+                <div [ngClass]="{'active show': activeTab === 'students'}" class="tab-pane fade">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>#ID</th>
+                                    <th>ID</th>
                                     <th>Avatar</th>
                                     <th>Ad Soyad</th>
-                                    <th>E-posta</th>
+                                    <th>Email</th>
                                     <th>Telefon</th>
                                     <th>Okul</th>
                                     <th>Sınıf</th>
@@ -79,16 +126,17 @@
                 </div>
 
                 <!-- Öğretmenler Tablosu -->
-                <div [class.active]="activeTab === 'teachers'" [class.show]="activeTab === 'teachers'" class="tab-pane fade">
+                <div [ngClass]="{'active show': activeTab === 'teachers'}" class="tab-pane fade">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>#ID</th>
+                                    <th>ID</th>
                                     <th>Avatar</th>
                                     <th>Ad Soyad</th>
-                                    <th>E-posta</th>
+                                    <th>Email</th>
                                     <th>Telefon</th>
+                                    <th>Kayıt Tarihi</th>
                                     <th>İşlemler</th>
                                 </tr>
                             </thead>
@@ -102,6 +150,7 @@
                                     <td>{{ teacher.adi_soyadi }}</td>
                                     <td>{{ teacher.email }}</td>
                                     <td>{{ teacher.cep_telefonu || 'Belirtilmemiş' }}</td>
+                                    <td>{{ teacher.created_at | date }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <button class="btn btn-sm btn-primary" [routerLink]="['/yonetici-sayfasi/ogretmen-detay', teacher.id]">
@@ -114,10 +163,10 @@
                                     </td>
                                 </tr>
                                 <tr *ngIf="teachers.length === 0 && !isLoading">
-                                    <td colspan="6" class="text-center py-3">Kayıtlı öğretmen bulunamadı.</td>
+                                    <td colspan="7" class="text-center py-3">Kayıtlı öğretmen bulunamadı.</td>
                                 </tr>
                                 <tr *ngIf="isLoading">
-                                    <td colspan="6" class="text-center py-3">Yükleniyor...</td>
+                                    <td colspan="7" class="text-center py-3">Yükleniyor...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -125,16 +174,16 @@
                 </div>
 
                 <!-- Yeni Kullanıcılar Tablosu -->
-                <div [class.active]="activeTab === 'new'" [class.show]="activeTab === 'new'" class="tab-pane fade">
+                <div [ngClass]="{'active show': activeTab === 'new'}" class="tab-pane fade">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>#ID</th>
+                                    <th>ID</th>
                                     <th>Avatar</th>
                                     <th>Ad Soyad</th>
-                                    <th>E-posta</th>
-                                    <th>Telefon</th>
+                                    <th>Email</th>
+                                    <th>Rütbe</th>
                                     <th>Kayıt Tarihi</th>
                                     <th>İşlemler</th>
                                 </tr>
@@ -148,8 +197,11 @@
                                     </td>
                                     <td>{{ user.adi_soyadi }}</td>
                                     <td>{{ user.email }}</td>
-                                    <td>{{ user.cep_telefonu || 'Belirtilmemiş' }}</td>
-                                    <td>{{ user.created_at | date:'dd.MM.yyyy HH:mm' }}</td>
+                                    <td>
+                                        <span class="badge bg-info" *ngIf="user.rutbe === 'ogrenci'">Öğrenci</span>
+                                        <span class="badge bg-primary" *ngIf="user.rutbe === 'ogretmen'">Öğretmen</span>
+                                    </td>
+                                    <td>{{ user.created_at | date }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <button class="btn btn-sm btn-success" (click)="approveUser(user.id)">
