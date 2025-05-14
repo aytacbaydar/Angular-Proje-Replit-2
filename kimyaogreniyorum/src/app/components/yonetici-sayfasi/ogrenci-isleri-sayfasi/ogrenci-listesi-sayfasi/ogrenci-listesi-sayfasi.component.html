@@ -1,202 +1,229 @@
-<div class="users-container">
-    <div class="page-header">
-        <h1>Kullanıcı Yönetimi</h1>
-        <button class="btn btn-primary btn-sm">
-            <i class="bi bi-plus"></i> Yeni Kullanıcı
-        </button>
+
+<div class="container-fluid">
+    <div class="dashboard-header">
+        <h2>Kullanıcı Yönetimi</h2>
+        <p>Öğrenci ve öğretmen bilgilerini yönetin</p>
     </div>
 
-    <div class="tab-navigation">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link" [class.active]="activeTab === 'students'" (click)="setActiveTab('students')">
-                    <i class="bi bi-people"></i> Öğrenciler
-                    <span class="badge bg-primary">{{students.length}}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [class.active]="activeTab === 'teachers'" (click)="setActiveTab('teachers')">
-                    <i class="bi bi-person-video3"></i> Öğretmenler
-                    <span class="badge bg-success">{{teachers.length}}</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [class.active]="activeTab === 'new'" (click)="setActiveTab('new')">
-                    <i class="bi bi-person-plus"></i> Yeni Kayıtlar
-                    <span class="badge bg-warning">{{newUsers.length}}</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="filters">
-        <div class="search-bar">
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Arama...">
+    <!-- Özet Kartları -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card summary-card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Toplam Öğrenci</h6>
+                            <h2 class="card-text">{{ students.length }}</h2>
+                        </div>
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="filter-buttons d-none d-md-flex">
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-funnel"></i> Filtrele
-            </button>
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="bi bi-sort-down"></i> Sırala
-            </button>
+        <div class="col-md-4">
+            <div class="card summary-card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Toplam Öğretmen</h6>
+                            <h2 class="card-text">{{ teachers.length }}</h2>
+                        </div>
+                        <i class="bi bi-person-video3 fs-1"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="loading-spinner" *ngIf="isLoading">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Yükleniyor...</span>
+        <div class="col-md-4">
+            <div class="card summary-card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Onay Bekleyen</h6>
+                            <h2 class="card-text">{{ newUsers.length }}</h2>
+                        </div>
+                        <i class="bi bi-person-plus fs-1"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ÖĞRENCİLER -->
-    <div class="table-responsive" *ngIf="!isLoading && activeTab === 'students' && students.length > 0">
-        <h2 class="section-title">Öğrenciler</h2>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Profil</th>
-                    <th>Adı Soyadı</th>
-                    <th>Email</th>
-                    <th>Telefon</th>
-                    <th>Okul</th>
-                    <th>Sınıf</th>
-                    <th>Durum</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let student of students">
-                    <td>{{ student.id }}</td>
-                    <td class="user-avatar">
-                        <img [src]="student.avatar || 'assets/images/default-avatar.png'" alt="Öğrenci Avatar">
-                    </td>
-                    <td>{{ student.adi_soyadi }}</td>
-                    <td>{{ student.email }}</td>
-                    <td>{{ student.cep_telefonu || '-' }}</td>
-                    <td>{{ student.bilgiler?.okulu || '-' }}</td>
-                    <td>{{ student.bilgiler?.sinifi || '-' }}</td>
-                    <td>
-                        <span class="badge" [ngClass]="student.aktif ? 'bg-success' : 'bg-danger'">
-                            {{ student.aktif ? 'Aktif' : 'Pasif' }}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-primary btn-sm" title="Düzenle"
-                                (click)="editStudent(student.id)">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger btn-sm" title="Sil">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': activeTab === 'students'}" 
+                            (click)="setActiveTab('students')" type="button">
+                        <i class="bi bi-mortarboard"></i> Öğrenciler
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': activeTab === 'teachers'}" 
+                            (click)="setActiveTab('teachers')" type="button">
+                        <i class="bi bi-person-video3"></i> Öğretmenler
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" [ngClass]="{'active': activeTab === 'new'}" 
+                            (click)="setActiveTab('new')" type="button">
+                        <i class="bi bi-person-plus"></i> Yeni Kullanıcılar
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content">
+                <!-- Öğrenciler Tablosu -->
+                <div [ngClass]="{'active show': activeTab === 'students'}" class="tab-pane fade">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Avatar</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Email</th>
+                                    <th>Telefon</th>
+                                    <th>Okul</th>
+                                    <th>Sınıf</th>
+                                    <th>Grup</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let student of students">
+                                    <td>{{ student.id }}</td>
+                                    <td>
+                                        <img [src]="student.avatar || 'https://ui-avatars.com/api/?name=' + student.adi_soyadi + '&background=random'" 
+                                             class="rounded-circle" width="40" height="40" alt="Avatar">
+                                    </td>
+                                    <td>{{ student.adi_soyadi }}</td>
+                                    <td>{{ student.email }}</td>
+                                    <td>{{ student.cep_telefonu || 'Belirtilmemiş' }}</td>
+                                    <td>{{ student.okulu || 'Belirtilmemiş' }}</td>
+                                    <td>{{ student.sinifi || 'Belirtilmemiş' }}</td>
+                                    <td>{{ student.grubu || 'Belirtilmemiş' }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-primary" [routerLink]="['/yonetici-sayfasi/ogrenci-detay', student.id]">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" (click)="deleteStudent(student.id)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="students.length === 0 && !isLoading">
+                                    <td colspan="9" class="text-center py-3">Kayıtlı öğrenci bulunamadı.</td>
+                                </tr>
+                                <tr *ngIf="isLoading">
+                                    <td colspan="9" class="text-center py-3">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-    <!-- ÖĞRETMENLER -->
-    <div class="table-responsive" *ngIf="!isLoading && activeTab === 'teachers' && teachers.length > 0">
-        <h2 class="section-title">Öğretmenler</h2>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Profil</th>
-                    <th>Adı Soyadı</th>
-                    <th>Email</th>
-                    <th>Telefon</th>
-                    <th>Branş</th>
-                    <th>Durum</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let teacher of teachers">
-                    <td>{{ teacher.id }}</td>
-                    <td class="user-avatar">
-                        <img [src]="teacher.avatar || 'assets/images/default-avatar.png'" alt="Öğretmen Avatar">
-                    </td>
-                    <td>{{ teacher.adi_soyadi }}</td>
-                    <td>{{ teacher.email }}</td>
-                    <td>{{ teacher.cep_telefonu || '-' }}</td>
-                    <td>{{ teacher.bilgiler?.brans || '-' }}</td>
-                    <td>
-                        <span class="badge" [ngClass]="teacher.aktif ? 'bg-success' : 'bg-danger'">
-                            {{ teacher.aktif ? 'Aktif' : 'Pasif' }}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-primary btn-sm" title="Düzenle">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger btn-sm" title="Sil">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                <!-- Öğretmenler Tablosu -->
+                <div [ngClass]="{'active show': activeTab === 'teachers'}" class="tab-pane fade">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Avatar</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Email</th>
+                                    <th>Telefon</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let teacher of teachers">
+                                    <td>{{ teacher.id }}</td>
+                                    <td>
+                                        <img [src]="teacher.avatar || 'https://ui-avatars.com/api/?name=' + teacher.adi_soyadi + '&background=random'" 
+                                             class="rounded-circle" width="40" height="40" alt="Avatar">
+                                    </td>
+                                    <td>{{ teacher.adi_soyadi }}</td>
+                                    <td>{{ teacher.email }}</td>
+                                    <td>{{ teacher.cep_telefonu || 'Belirtilmemiş' }}</td>
+                                    <td>{{ teacher.created_at | date }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-primary" [routerLink]="['/yonetici-sayfasi/ogretmen-detay', teacher.id]">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" (click)="deleteTeacher(teacher.id)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="teachers.length === 0 && !isLoading">
+                                    <td colspan="7" class="text-center py-3">Kayıtlı öğretmen bulunamadı.</td>
+                                </tr>
+                                <tr *ngIf="isLoading">
+                                    <td colspan="7" class="text-center py-3">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-    <!-- YENİ KAYITLAR -->
-    <div class="table-responsive" *ngIf="!isLoading && activeTab === 'new' && newUsers.length > 0">
-        <h2 class="section-title">Yeni Kayıtlar</h2>
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Profil</th>
-                    <th>Adı Soyadı</th>
-                    <th>Email</th>
-                    <th>Telefon</th>
-                    <th>Kayıt Tarihi</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let user of newUsers">
-                    <td>{{ user.id }}</td>
-                    <td class="user-avatar">
-                        <img [src]="user.avatar || 'assets/images/default-avatar.png'" alt="Kullanıcı Avatar">
-                    </td>
-                    <td>{{ user.adi_soyadi }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.cep_telefonu || '-' }}</td>
-                    <td>{{ user.bilgiler?.kayit_tarihi || '-' }}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-success btn-sm" title="Onayla">
-                                <i class="bi bi-check-lg"></i><span class="d-none d-md-inline"> Onayla</span>
-                            </button>
-                            <button class="btn btn-sm btn-danger btn-sm" title="Reddet">
-                                <i class="bi bi-x-lg"></i><span class="d-none d-md-inline"> Reddet</span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="no-data" *ngIf="!isLoading && activeTab === 'students' && students.length === 0">
-        <i class="bi bi-people"></i>
-        <p>Hiç öğrenci bulunamadı.</p>
-    </div>
-
-    <div class="no-data" *ngIf="!isLoading && activeTab === 'teachers' && teachers.length === 0">
-        <i class="bi bi-person-video3"></i>
-        <p>Hiç öğretmen bulunamadı.</p>
-    </div>
-
-    <div class="no-data" *ngIf="!isLoading && activeTab === 'new' && newUsers.length === 0">
-        <i class="bi bi-person-plus"></i>
-        <p>Bekleyen yeni kayıt bulunmamaktadır.</p>
+                <!-- Yeni Kullanıcılar Tablosu -->
+                <div [ngClass]="{'active show': activeTab === 'new'}" class="tab-pane fade">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Avatar</th>
+                                    <th>Ad Soyad</th>
+                                    <th>Email</th>
+                                    <th>Rütbe</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of newUsers">
+                                    <td>{{ user.id }}</td>
+                                    <td>
+                                        <img [src]="user.avatar || 'https://ui-avatars.com/api/?name=' + user.adi_soyadi + '&background=random'" 
+                                             class="rounded-circle" width="40" height="40" alt="Avatar">
+                                    </td>
+                                    <td>{{ user.adi_soyadi }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>
+                                        <span class="badge bg-info" *ngIf="user.rutbe === 'ogrenci'">Öğrenci</span>
+                                        <span class="badge bg-primary" *ngIf="user.rutbe === 'ogretmen'">Öğretmen</span>
+                                    </td>
+                                    <td>{{ user.created_at | date }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-success" (click)="approveUser(user.id)">
+                                                <i class="bi bi-check-circle"></i> Onayla
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" (click)="rejectUser(user.id)">
+                                                <i class="bi bi-x-circle"></i> Reddet
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="newUsers.length === 0 && !isLoading">
+                                    <td colspan="7" class="text-center py-3">Onay bekleyen kullanıcı yok.</td>
+                                </tr>
+                                <tr *ngIf="isLoading">
+                                    <td colspan="7" class="text-center py-3">Yükleniyor...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
