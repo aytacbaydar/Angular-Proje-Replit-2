@@ -10,10 +10,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { OgrenciOnaySayfasiComponent } from './index-sayfasi/giris-kayit-islemeleri/ogrenci-onay-sayfasi/ogrenci-onay-sayfasi.component';
+import { YoneticiSayfasiModule } from './components/yonetici-sayfasi/yonetici-sayfasi.module';
 
 @NgModule({
-  declarations: [AppComponent, OgrenciOnaySayfasiComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -30,6 +30,7 @@ import { OgrenciOnaySayfasiComponent } from './index-sayfasi/giris-kayit-islemel
     NgxPaginationModule,
 
     IndexSayfasiModule,
+    YoneticiSayfasiModule
   ],
   providers: [],
   bootstrap: [AppComponent],

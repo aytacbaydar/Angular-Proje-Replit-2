@@ -1,75 +1,58 @@
-
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Content-Type: application/json; charset=UTF-8");
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-
+// Öğrenci bilgileri API'si
 require_once '../config.php';
 
-// Veritabanı bağlantısı
-$conn = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+// GET isteği: Öğrenci bilgilerini getir
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Öğrenci ID kontrolü
-        if (isset($_GET['id']) && !empty($_GET['id'])) {
-            $ogrenci_id = $_GET['id'];
-            
-            // Temel bilgileri al
-            $sql = "SELECT * FROM ogrenciler WHERE id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$ogrenci_id]);
-            $ogrenci = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$ogrenci) {
-                echo json_encode(['success' => false, 'message' => 'Öğrenci bulunamadı']);
-                exit;
-            }
-            
-            // Detay bilgilerini al
-            $detay_sql = "SELECT * FROM ogrenci_detay WHERE ogrenci_id = ?";
-            $detay_stmt = $conn->prepare($detay_sql);
-            $detay_stmt->execute([$ogrenci_id]);
-            $detay = $detay_stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Öğrencinin detay bilgilerini ekle
-            $ogrenci['detay'] = $detay ?: null;
-            
-            // Avatar URL'sini düzenle
-            if ($ogrenci['avatar']) {
-                $ogrenci['avatar_url'] = '/server/uploads/avatars/' . $ogrenci['avatar'];
-            }
-            
-            // Cevap döndür
-            echo json_encode(['success' => true, 'data' => $ogrenci]);
-        } else {
-            // Tüm öğrencileri listele
-            $sql = "SELECT id, ad, soyad, email, telefon, sinif, avatar, 
-                    ogrenci_no, aktif, kayit_tarihi, son_giris_tarihi 
-                    FROM ogrenciler ORDER BY id DESC";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $ogrenciler = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            // Avatar URL'lerini düzenle
-            foreach ($ogrenciler as &$ogrenci) {
-                if ($ogrenci['avatar']) {
-                    $ogrenci['avatar_url'] = '/server/uploads/avatars/' . $ogrenci['avatar'];
-                }
-            }
-            
-            echo json_encode(['success' => true, 'data' => $ogrenciler]);
+        // Kullanıcıyı doğrula
+        $user = authorize();
+        $studentId = isset($_GET['id']) ? intval($_GET['id']) : $user['id'];
+        
+        // Admin değilse, sadece kendi bilgilerini görebilir
+        if ($user['rutbe'] !== 'admin' && $studentId !== $user['id']) {
+            errorResponse('Bu bilgilere erişim yetkiniz yok', 403);
         }
+        
+        $conn = getConnection();
+        
+        // Öğrenci temel bilgilerini getir
+        $stmt = $conn->prepare("
+            SELECT id, adi_soyadi, email, cep_telefonu, rutbe, aktif, avatar, created_at
+            FROM ogrenciler
+            WHERE id = :id
+        ");
+        $stmt->bindParam(':id', $studentId);
+        $stmt->execute();
+        
+        if ($stmt->rowCount() === 0) {
+            errorResponse('Öğrenci bulunamadı', 404);
+        }
+        
+        $student = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Öğrenci detaylı bilgilerini getir
+        $stmt = $conn->prepare("
+            SELECT * FROM ogrenci_bilgileri
+            WHERE ogrenci_id = :ogrenci_id
+        ");
+        $stmt->bindParam(':ogrenci_id', $studentId);
+        $stmt->execute();
+        
+        $studentDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Sonuçları birleştir
+        $result = array_merge($student, $studentDetails);
+        
+        successResponse($result);
+        
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
+        errorResponse('Veritabanı hatası: ' . $e->getMessage(), 500);
+    } catch (Exception $e) {
+        errorResponse('Beklenmeyen bir hata oluştu: ' . $e->getMessage(), 500);
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Geçersiz istek metodu']);
+}
+// Diğer HTTP metodlarını reddet
+else {
+    errorResponse('Bu endpoint sadece GET metodunu desteklemektedir', 405);
 }

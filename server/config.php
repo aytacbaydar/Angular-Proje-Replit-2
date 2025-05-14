@@ -1,60 +1,36 @@
 <?php
-// Veritabanı bağlantı bilgileri
-$db_host = 'localhost';
-$db_name = 'kimyaogreniyorum';
-$db_user = 'root';
-$db_pass = '';
-
-// Hata raporlama
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Oturum başlat
-session_start();
-
-// Zaman dilimi ayarı
-date_default_timezone_set('Europe/Istanbul');
-
-// Karakter seti
-header('Content-Type: text/html; charset=utf-8');
-
-// CORS Başlıkları
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT, PATCH");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Content-Type: application/json; charset=UTF-8");
 
-// OPTIONS isteği işlemi
+// Preflight OPTIONS request için
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit;
+    exit();
 }
 
-// Veritabanı Bağlantısı
-try {
-    $host = $db_host;
-    $dbname = $db_name;
-    $username = $db_user;
-    $password = $db_pass;
+// Veritabanı bağlantı bilgileri
+define('DB_HOST', 'localhost');
+define('DB_USER', 'Toluen96411');
+define('DB_PASS', '3g783O*qd');
+define('DB_NAME', 'ogrenciData');
 
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-} catch(PDOException $e) {
-    echo json_encode([
-        'success' => false,
-        'error' => 'Veritabanı bağlantı hatası: ' . $e->getMessage()
-    ]);
-    exit;
-}
-
-// Yardımcı Fonksiyonlar
-function cleanInput($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+// Veritabanına bağlantı
+function getConnection() {
+    try {
+        $conn = new PDO(
+            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+            DB_USER,
+            DB_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+        return $conn;
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Veritabanı bağlantı hatası: ' . $e->getMessage()]);
+        exit();
+    }
 }
 
 // Oturum yetkilendirme
@@ -76,7 +52,7 @@ function authorize() {
 
     // Token doğrulama
     try {
-        global $conn;
+        $conn = getConnection();
         $stmt = $conn->prepare("SELECT id, adi_soyadi, email, rutbe FROM ogrenciler WHERE MD5(CONCAT(id, email, sifre)) = :token AND aktif = TRUE");
         $stmt->bindParam(':token', $token);
         $stmt->execute();

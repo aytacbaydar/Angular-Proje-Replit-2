@@ -1,0 +1,193 @@
+<div class="edit-container">
+    <div class="page-header">
+        <h1>Öğrenci Düzenle</h1>
+        <button class="btn btn-secondary btn-sm" (click)="navigateBack()">
+            <i class="bi bi-arrow-left"></i> Geri Dön
+        </button>
+    </div>
+
+    <div class="loading-spinner" *ngIf="isLoading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Yükleniyor...</span>
+        </div>
+    </div>
+
+    <div class="edit-form" *ngIf="!isLoading && student">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="avatar-upload">
+                        <div class="avatar-container" (click)="fileInput.click()">
+                            <div class="avatar-preview">
+                                <img [src]="student.avatar || 'assets/images/default-avatar.png'" alt="Avatar"
+                                    class="avatar-image">
+                                <div class="avatar-overlay">
+                                    <i class="bi bi-camera"></i>
+                                    <span>Değiştir</span>
+                                </div>
+                            </div>
+                            <input #fileInput type="file" hidden accept="image/jpeg,image/png,image/gif,image/webp"
+                                (change)="onFileChange($event)">
+                        </div>
+                        <p class="avatar-help-text">Profil fotoğrafını değiştirmek için tıklayın</p>
+                        <div *ngIf="selectedFile" class="selected-file-info">
+                            <span class="badge bg-success">{{ selectedFile.name }} ({{ (selectedFile.size /
+                                1024).toFixed(1) }} KB)</span>
+                            <small class="text-muted d-block mt-1">Kaydet butonuna basınca yüklenecektir</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="bi bi-person"></i> Temel Bilgiler</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="adi_soyadi" class="form-label">Adı Soyadı</label>
+                                    <input type="text" class="form-control" id="adi_soyadi"
+                                        formControlName="adi_soyadi">
+                                    <div *ngIf="editForm.get('adi_soyadi')?.invalid && editForm.get('adi_soyadi')?.touched"
+                                        class="text-danger mt-1">
+                                        <small>Ad Soyad gereklidir</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" formControlName="email">
+                                    <div *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched"
+                                        class="text-danger mt-1">
+                                        <small>Geçerli bir email adresi gereklidir</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cep_telefonu" class="form-label">Cep Telefonu</label>
+                                    <input type="text" class="form-control" id="cep_telefonu"
+                                        formControlName="cep_telefonu">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="aktif" class="form-label">Hesap Durumu</label>
+                                    <select class="form-select" id="aktif" formControlName="aktif">
+                                        <option [ngValue]="true">Aktif</option>
+                                        <option [ngValue]="false">Pasif</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="sifre" class="form-label">Yeni Şifre (Boş bırakılabilir)</label>
+                                    <input type="password" class="form-control" id="sifre" formControlName="sifre">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="sifre_tekrar" class="form-label">Şifre Tekrar</label>
+                                    <input type="password" class="form-control" id="sifre_tekrar"
+                                        formControlName="sifre_tekrar">
+                                    <div *ngIf="editForm.errors?.['passwordMismatch']" class="text-danger mt-1">
+                                        <small>Şifreler eşleşmiyor</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="bi bi-book"></i> Eğitim Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="okulu" class="form-label">Okul</label>
+                                    <input type="text" class="form-control" id="okulu" formControlName="okulu">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="sinifi" class="form-label">Sınıf</label>
+                                    <input type="text" class="form-control" id="sinifi" formControlName="sinifi">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="grubu" class="form-label">Grup</label>
+                                    <select class="form-select" id="grubu" formControlName="grubu">
+                                        <option value="">Seçiniz</option>
+                                        <option value="A">A Grubu</option>
+                                        <option value="B">B Grubu</option>
+                                        <option value="C">C Grubu</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ders_gunu" class="form-label">Ders Günü</label>
+                                    <select class="form-select" id="ders_gunu" formControlName="ders_gunu">
+                                        <option value="">Seçiniz</option>
+                                        <option value="Pazartesi">Pazartesi</option>
+                                        <option value="Salı">Salı</option>
+                                        <option value="Çarşamba">Çarşamba</option>
+                                        <option value="Perşembe">Perşembe</option>
+                                        <option value="Cuma">Cuma</option>
+                                        <option value="Cumartesi">Cumartesi</option>
+                                        <option value="Pazar">Pazar</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="ders_saati" class="form-label">Ders Saati</label>
+                                    <input type="text" class="form-control" id="ders_saati"
+                                        formControlName="ders_saati">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="ucret" class="form-label">Aylık Ücret</label>
+                                    <input type="number" class="form-control" id="ucret" formControlName="ucret">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="bi bi-people"></i> Veli Bilgileri</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="veli_adi" class="form-label">Veli Adı</label>
+                                    <input type="text" class="form-control" id="veli_adi" formControlName="veli_adi">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="veli_cep" class="form-label">Veli Telefon</label>
+                                    <input type="text" class="form-control" id="veli_cep" formControlName="veli_cep">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary" (click)="navigateBack()">İptal</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || isSubmitting">
+                            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+                                aria-hidden="true"></span>
+                            Kaydet
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+    </div>
+
+    <div class="alert alert-success" *ngIf="success">
+        <i class="bi bi-check-circle"></i> {{ success }}
+    </div>
+</div>
+  
