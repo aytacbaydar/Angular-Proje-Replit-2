@@ -28,7 +28,9 @@ interface User {
   templateUrl: './ogrenci-listesi-sayfasi.component.html',
   styleUrl: './ogrenci-listesi-sayfasi.component.scss',
 })
-export class OgrenciListesiSayfasiComponent implements OnInit {
+export import { User } from '../../../../models/user.model';
+
+class OgrenciListesiSayfasiComponent implements OnInit {
   students: User[] = [];
   teachers: User[] = [];
   newUsers: User[] = [];
