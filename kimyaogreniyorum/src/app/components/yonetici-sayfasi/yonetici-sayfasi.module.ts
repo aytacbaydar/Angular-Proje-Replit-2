@@ -1,33 +1,31 @@
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from '../../app-routing.module';
+
 import { YoneticiIndexSayfasiComponent } from './yonetici-index-sayfasi/yonetici-index-sayfasi.component';
-import { OgrenciDetaySayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component';
 import { OgrenciListesiSayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component';
-
-
+import { OgrenciDetaySayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component';
 
 @NgModule({
   declarations: [
-    OgrenciListesiSayfasiComponent,
-    OgrenciDetaySayfasiComponent,
     YoneticiIndexSayfasiComponent,
+    OgrenciListesiSayfasiComponent,
+    OgrenciDetaySayfasiComponent
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    BrowserModule,
-    AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    HttpClientModule
   ],
   exports: [
-    OgrenciListesiSayfasiComponent,
-    OgrenciDetaySayfasiComponent,
     YoneticiIndexSayfasiComponent,
+    OgrenciListesiSayfasiComponent,
+    OgrenciDetaySayfasiComponent
   ]
 })
 export class YoneticiSayfasiModule {}

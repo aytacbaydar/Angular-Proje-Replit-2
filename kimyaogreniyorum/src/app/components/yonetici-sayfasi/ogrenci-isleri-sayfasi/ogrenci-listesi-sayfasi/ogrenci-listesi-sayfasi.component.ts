@@ -1,233 +1,66 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
 
+// User modelini oluştur
 interface User {
   id: number;
   adi_soyadi: string;
   email: string;
-  cep_telefonu?: string;
-  avatar?: string;
+  cep_telefonu: string;
   rutbe: string;
   aktif: boolean;
-  created_at?: string;
-  // Öğrenci alanları
+  avatar: string;
+  created_at: string;
   okulu?: string;
   sinifi?: string;
   grubu?: string;
   ders_gunu?: string;
   ders_saati?: string;
   ucret?: string;
-  // Öğretmen alanları
-  brans?: string;
+  veli_adi?: string;
+  veli_cep?: string;
 }
 
 @Component({
   selector: 'app-ogrenci-listesi-sayfasi',
-  standalone: false,
   templateUrl: './ogrenci-listesi-sayfasi.component.html',
-  styleUrl: './ogrenci-listesi-sayfasi.component.scss',
+  styleUrls: ['./ogrenci-listesi-sayfasi.component.scss']
 })
-export import { User } from '../../../../models/user.model';
-
-class OgrenciListesiSayfasiComponent implements OnInit {
+export class OgrenciListesiSayfasiComponent implements OnInit {
   students: User[] = [];
   teachers: User[] = [];
-  newUsers: User[] = [];
-  isLoading = true;
-  activeTab: 'students' | 'teachers' | 'new' = 'students';
+  filteredStudents: User[] = [];
+  filteredTeachers: User[] = [];
+  pendingUsers: User[] = [];
+  showPendingUsers = false;
+  searchText = '';
+  isLoading = false;
+  currentUser: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
-  setActiveTab(tab: 'students' | 'teachers' | 'new'): void {
-    this.activeTab = tab;
-  }
-
-  // Öğrenci silme işlemi
-  deleteStudent(id: number): void {
-    if(confirm('Bu öğrenciyi silmek istediğinize emin misiniz?')) {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        this.router.navigate(['/giris']);
-        return;
-      }
-
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
-
-      // İki farklı silme yöntemi deneme (URL parametresi ve body ile)
-      this.http.delete(`./server/api/ogrenci_sil.php/${id}`, {
-        headers: headers
-      }).subscribe({
-        next: (response: any) => {
-          if (response.success) {
-            // Listeyi güncelle
-            this.students = this.students.filter(student => student.id !== id);
-            this.toastr.success('Öğrenci başarıyla silindi.');
-          } else {
-            this.toastr.error(`Hata: ${response.error}`);
-          }
-        },
-        error: (error) => {
-          console.error('Öğrenci silinirken hata oluştu:', error);
-
-          // Alternatif silme yöntemi deneme
-          this.http.delete(`./server/api/ogrenci_sil.php`, {
-            headers: headers,
-            body: { id: id }
-          }).subscribe({
-            next: (response: any) => {
-              if (response.success) {
-                // Listeyi güncelle
-                this.students = this.students.filter(student => student.id !== id);
-                this.toastr.success('Öğrenci başarıyla silindi.');
-              } else {
-                this.toastr.error(`Hata: ${response.error}`);
-              }
-            },
-            error: (err) => {
-              console.error('İkinci silme denemesi de başarısız:', err);
-              this.toastr.error('Öğrenci silinirken bir hata oluştu. Lütfen tekrar deneyin.');
-            }
-          });
-        }
-      });
-    }
-  }
-
-  // Öğretmen silme işlemi
-  deleteTeacher(id: number): void {
-    if (confirm('Bu öğretmeni silmek istediğinize emin misiniz?')) {
-      // LocalStorage veya sessionStorage'dan token'ı al
-      let token = '';
-      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        token = user.token || '';
-      }
-
-      this.http
-        .delete(`./server/api/ogrenci_sil.php/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .subscribe({
-          next: (response: any) => {
-            if (response.success) {
-              // Silinen öğretmeni listeden kaldır
-              this.teachers = this.teachers.filter(teacher => teacher.id !== id);
-              alert('Öğretmen başarıyla silindi.');
-            } else {
-              alert(`Hata: ${response.message}`);
-            }
-          },
-          error: (error) => {
-            console.error('Öğretmen silinirken hata oluştu:', error);
-            alert('Öğretmen silinirken bir hata oluştu. Lütfen tekrar deneyin.');
-          }
-        });
-    }
-  }
-
-  // Kullanıcı onaylama işlemi
-  approveUser(id: number): void {
-    // LocalStorage veya sessionStorage'dan token'ı al
-    let token = '';
-    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      token = user.token || '';
-    }
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-
-    // Kullanıcıyı onaylama isteği
-    this.http
-      .put('./server/api/kullanici_guncelle.php', 
-        { id: id, aktif: true },
-        { headers: headers }
-      )
-      .subscribe({
-        next: (response: any) => {
-          if (response.success) {
-            // Onaylanan kullanıcıyı listeden çıkar
-            const user = this.newUsers.find(u => u.id === id);
-            if (user) {
-              this.newUsers = this.newUsers.filter(u => u.id !== id);
-
-              // Kullanıcıyı ilgili listeye ekle
-              if (user.rutbe === 'ogrenci') {
-                user.aktif = true;
-                this.students.push(user);
-              } else if (user.rutbe === 'ogretmen') {
-                user.aktif = true;
-                this.teachers.push(user);
-              }
-            }
-            alert('Kullanıcı başarıyla onaylandı.');
-          } else {
-            alert(`Hata: ${response.message}`);
-          }
-        },
-        error: (error) => {
-          console.error('Kullanıcı onaylanırken hata oluştu:', error);
-          alert('Kullanıcı onaylanırken bir hata oluştu. Lütfen tekrar deneyin.');
-        }
-      });
-  }
-
-  // Kullanıcı reddetme işlemi
-  rejectUser(id: number): void {
-    if (confirm('Bu kullanıcıyı reddetmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
-      // LocalStorage veya sessionStorage'dan token'ı al
-      let token = '';
-      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        token = user.token || '';
-      }
-
-      this.http
-        .delete(`./server/api/ogrenci_sil.php/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .subscribe({
-          next: (response: any) => {
-            if (response.success) {
-              // Reddedilen kullanıcıyı listeden kaldır
-              this.newUsers = this.newUsers.filter(user => user.id !== id);
-              alert('Kullanıcı başarıyla reddedildi.');
-            } else {
-              alert(`Hata: ${response.message}`);
-            }
-          },
-          error: (error) => {
-            console.error('Kullanıcı reddedilirken hata oluştu:', error);
-            alert('Kullanıcı reddedilirken bir hata oluştu. Lütfen tekrar deneyin.');
-          }
-        });
-    }
-  }
-
   loadUsers(): void {
-    this.isLoading = true;
-    // LocalStorage veya sessionStorage'dan token'ı al
-    let token = '';
-    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      token = user.token || '';
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.router.navigate(['/giris']);
+      return;
     }
 
-    // Yeni oluşturulan API'ye istek gönder - tüm öğrencileri getirir
+    this.isLoading = true;
+    // Tüm öğrencileri getiren API'ye istek gönder
     this.http
       .get<any>('./server/api/ogrenciler_listesi.php', {
         headers: { Authorization: `Bearer ${token}` },
@@ -247,13 +80,18 @@ class OgrenciListesiSayfasiComponent implements OnInit {
               (user: User) => user.rutbe === 'ogretmen' && user.aktif
             );
 
-            this.newUsers = users.filter((user: User) => !user.aktif);
+            this.pendingUsers = users.filter(
+              (user: User) => !user.aktif
+            );
 
-            console.log('Yüklenen öğrenciler:', this.students);
+            this.filteredStudents = [...this.students];
+            this.filteredTeachers = [...this.teachers];
+
+            this.isLoading = false;
           } else {
-            console.error('API yanıtı başarısız:', response.error);
+            console.error('Veri yüklenirken hata oluştu:', response.error);
+            this.isLoading = false;
           }
-          this.isLoading = false;
         },
         error: (error) => {
           console.error('API hatası:', error);
@@ -263,157 +101,198 @@ class OgrenciListesiSayfasiComponent implements OnInit {
   }
 
   deleteStudent(id: number): void {
-    if (!confirm('Bu öğrenciyi silmek istediğinize emin misiniz?')) {
-      return;
-    }
+    Swal.fire({
+      title: 'Emin misiniz?',
+      text: "Bu öğrenciyi silmek istediğinizden emin misiniz?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet, sil!',
+      cancelButtonText: 'İptal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.spinner.show();
+        const token = localStorage.getItem('token');
 
-    // LocalStorage veya sessionStorage'dan token'ı al
-    let token = '';
-    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      token = user.token || '';
-    }
-
-    this.http
-      .post<any>('./server/api/ogrenci_sil.php', { id }, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .subscribe({
-        next: (response) => {
-          if (response.success) {
-            alert('Öğrenci başarıyla silindi!');
-            // Listeyi yenile
-            this.loadUsers();
-          } else {
-            alert('Silme işlemi başarısız: ' + response.error);
+        this.http.delete<any>(`./server/api/ogrenci_sil.php?id=${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).subscribe({
+          next: (response) => {
+            this.spinner.hide();
+            if (response.success) {
+              // Öğrenciyi listeden kaldır
+              this.students = this.students.filter(student => student.id !== id);
+              this.filteredStudents = this.filteredStudents.filter(student => student.id !== id);
+              this.toastr.success('Öğrenci başarıyla silindi.');
+            } else {
+              this.toastr.error(`Hata: ${response.error}`);
+            }
+          },
+          error: (error) => {
+            this.spinner.hide();
+            this.toastr.error('Öğrenci silinirken bir hata oluştu.');
+            console.error('Silme hatası:', error);
           }
-        },
-        error: (error) => {
-          console.error('API hatası:', error);
-          alert('Silme işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
-        },
-      });
+        });
+      }
+    });
   }
 
   deleteTeacher(id: number): void {
-    if (!confirm('Bu öğretmeni silmek istediğinize emin misiniz?')) {
+    Swal.fire({
+      title: 'Emin misiniz?',
+      text: "Bu öğretmeni silmek istediğinizden emin misiniz?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet, sil!',
+      cancelButtonText: 'İptal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.spinner.show();
+        const token = localStorage.getItem('token');
+
+        this.http.delete<any>(`./server/api/ogrenci_sil.php?id=${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).subscribe({
+          next: (response) => {
+            this.spinner.hide();
+            if (response.success) {
+              // Öğretmeni listeden kaldır
+              this.teachers = this.teachers.filter(teacher => teacher.id !== id);
+              this.filteredTeachers = this.filteredTeachers.filter(teacher => teacher.id !== id);
+              this.toastr.success('Öğretmen başarıyla silindi.');
+            } else {
+              this.toastr.error(`Hata: ${response.error}`);
+            }
+          },
+          error: (error) => {
+            this.spinner.hide();
+            this.toastr.error('Öğretmen silinirken bir hata oluştu.');
+            console.error('Silme hatası:', error);
+          }
+        });
+      }
+    });
+  }
+
+  approveUser(userId: number): void {
+    this.spinner.show();
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    this.http.post<any>('./server/api/kullanici_guncelle.php', {
+      id: userId,
+      aktif: true
+    }, { headers }).subscribe({
+      next: (response) => {
+        this.spinner.hide();
+        if (response.success) {
+          // Kullanıcıyı bekleyen kullanıcılar listesinden çıkar
+          const user = this.pendingUsers.find(u => u.id === userId);
+          this.pendingUsers = this.pendingUsers.filter(u => u.id !== userId);
+
+          // Kullanıcıyı uygun listeye ekle
+          if (user) {
+            user.aktif = true;
+            if (user.rutbe === 'ogrenci') {
+              this.students.push(user);
+              this.filteredStudents = [...this.students];
+            } else if (user.rutbe === 'ogretmen') {
+              this.teachers.push(user);
+              this.filteredTeachers = [...this.teachers];
+            }
+          }
+
+          this.toastr.success('Kullanıcı başarıyla onaylandı.');
+        } else {
+          this.toastr.error(`Hata: ${response.error}`);
+        }
+      },
+      error: (error) => {
+        this.spinner.hide();
+        this.toastr.error('Onaylama işlemi sırasında bir hata oluştu.');
+        console.error('Onaylama hatası:', error);
+      }
+    });
+  }
+
+  rejectUser(userId: number): void {
+    Swal.fire({
+      title: 'Emin misiniz?',
+      text: "Bu kullanıcıyı reddetmek istediğinizden emin misiniz?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Evet, reddet!',
+      cancelButtonText: 'İptal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.spinner.show();
+        const token = localStorage.getItem('token');
+
+        this.http.delete<any>(`./server/api/ogrenci_sil.php?id=${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).subscribe({
+          next: (response) => {
+            this.spinner.hide();
+            if (response.success) {
+              // Kullanıcıyı listeden kaldır
+              this.pendingUsers = this.pendingUsers.filter(user => user.id !== userId);
+              this.toastr.success('Kullanıcı başarıyla reddedildi.');
+            } else {
+              this.toastr.error(`Hata: ${response.error}`);
+            }
+          },
+          error: (error) => {
+            this.spinner.hide();
+            this.toastr.error('Kullanıcı reddedilirken bir hata oluştu.');
+            console.error('Reddetme hatası:', error);
+          }
+        });
+      }
+    });
+  }
+
+  filterStudents(): void {
+    if (!this.searchText) {
+      this.filteredStudents = [...this.students];
       return;
     }
 
-    // LocalStorage veya sessionStorage'dan token'ı al
-    let token = '';
-    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-    if (userStr) {
-      const user = JSON.parse(userStr);
-      token = user.token || '';
-    }
-
-    this.http
-      .post<any>('./server/api/ogrenci_sil.php', { id }, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      .subscribe({
-        next: (response) => {
-          if (response.success) {
-            alert('Öğretmen başarıyla silindi!');
-            // Listeyi yenile
-            this.loadUsers();
-          } else {
-            alert('Silme işlemi başarısız: ' + response.error);
-          }
-        },
-        error: (error) => {
-          console.error('API hatası:', error);
-          alert('Silme işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
-        },
-      });
+    const search = this.searchText.toLowerCase();
+    this.filteredStudents = this.students.filter(student => 
+      student.adi_soyadi.toLowerCase().includes(search) ||
+      student.email.toLowerCase().includes(search) ||
+      (student.okulu && student.okulu.toLowerCase().includes(search)) ||
+      (student.sinifi && student.sinifi.toLowerCase().includes(search))
+    );
   }
 
-    // Yeni kullanıcıyı onaylama fonksiyonu
-    approveUser(userId: number) {
-      if (!confirm('Bu kullanıcıyı onaylamak istediğinizden emin misiniz?')) {
-        return;
-      }
-
-      // LocalStorage veya sessionStorage'dan token'ı al
-      let token = '';
-      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        token = user.token || '';
-      }
-
-      // Kullanıcı verilerini hazırla
-      const userData = {
-        id: userId,
-        rutbe: 'ogrenci', // Onaylandığında öğrenci olarak ayarla
-        aktif: 1 // Aktif hesap olarak ayarla
-      };
-
-      this.http
-        .post<any>('./server/api/kullanici_guncelle.php', userData, {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-        .subscribe({
-          next: (response) => {
-            if (response.success) {
-              alert('Kullanıcı başarıyla onaylandı!');
-              this.loadUsers(); // Kullanıcı listesini yeniden yükle
-            } else {
-              alert('Kullanıcı onaylanamadı: ' + response.error);
-            }
-          },
-          error: (error) => {
-            console.error('Onaylama hatası:', error);
-            alert('Onaylama işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
-          },
-        });
+  filterTeachers(): void {
+    if (!this.searchText) {
+      this.filteredTeachers = [...this.teachers];
+      return;
     }
 
-    // Yeni kullanıcıyı reddetme fonksiyonu
-    rejectUser(userId: number) {
-      if (!confirm('Bu kullanıcıyı reddetmek istediğinizden emin misiniz? Bu işlem kullanıcıyı silecektir.')) {
-        return;
-      }
+    const search = this.searchText.toLowerCase();
+    this.filteredTeachers = this.teachers.filter(teacher => 
+      teacher.adi_soyadi.toLowerCase().includes(search) ||
+      teacher.email.toLowerCase().includes(search)
+    );
+  }
 
-      // LocalStorage veya sessionStorage'dan token'ı al
-      let token = '';
-      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        token = user.token || '';
-      }
+  togglePendingUsersView(): void {
+    this.showPendingUsers = !this.showPendingUsers;
+  }
 
-      this.http
-        .post<any>('./server/api/ogrenci_sil.php', { id: userId }, {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
-        .subscribe({
-          next: (response) => {
-            if (response.success) {
-              alert('Kullanıcı başarıyla reddedildi ve silindi!');
-              this.loadUsers(); // Kullanıcı listesini yeniden yükle
-            } else {
-              alert('Kullanıcı reddedilemedi: ' + response.error);
-            }
-          },
-          error: (error) => {
-            console.error('Reddetme hatası:', error);
-            alert('Reddetme işlemi sırasında bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
-          },
-        });
-    }
+  editStudent(id: number): void {
+    this.router.navigate(['/yonetici/ogrenci-detay', id]);
+  }
 }
