@@ -46,6 +46,155 @@ class OgrenciListesiSayfasiComponent implements OnInit {
   setActiveTab(tab: 'students' | 'teachers' | 'new'): void {
     this.activeTab = tab;
   }
+  
+  // Öğrenci silme işlemi
+  deleteStudent(id: number): void {
+    if (confirm('Bu öğrenciyi silmek istediğinize emin misiniz?')) {
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+
+      this.http
+        .delete(`./server/api/ogrenci_sil.php/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              // Silinen öğrenciyi listeden kaldır
+              this.students = this.students.filter(student => student.id !== id);
+              alert('Öğrenci başarıyla silindi.');
+            } else {
+              alert(`Hata: ${response.message}`);
+            }
+          },
+          error: (error) => {
+            console.error('Öğrenci silinirken hata oluştu:', error);
+            alert('Öğrenci silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+          }
+        });
+    }
+  }
+
+  // Öğretmen silme işlemi
+  deleteTeacher(id: number): void {
+    if (confirm('Bu öğretmeni silmek istediğinize emin misiniz?')) {
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+
+      this.http
+        .delete(`./server/api/ogrenci_sil.php/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              // Silinen öğretmeni listeden kaldır
+              this.teachers = this.teachers.filter(teacher => teacher.id !== id);
+              alert('Öğretmen başarıyla silindi.');
+            } else {
+              alert(`Hata: ${response.message}`);
+            }
+          },
+          error: (error) => {
+            console.error('Öğretmen silinirken hata oluştu:', error);
+            alert('Öğretmen silinirken bir hata oluştu. Lütfen tekrar deneyin.');
+          }
+        });
+    }
+  }
+
+  // Kullanıcı onaylama işlemi
+  approveUser(id: number): void {
+    // LocalStorage veya sessionStorage'dan token'ı al
+    let token = '';
+    const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      token = user.token || '';
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    // Kullanıcıyı onaylama isteği
+    this.http
+      .put('./server/api/kullanici_guncelle.php', 
+        { id: id, aktif: true },
+        { headers: headers }
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            // Onaylanan kullanıcıyı listeden çıkar
+            const user = this.newUsers.find(u => u.id === id);
+            if (user) {
+              this.newUsers = this.newUsers.filter(u => u.id !== id);
+              
+              // Kullanıcıyı ilgili listeye ekle
+              if (user.rutbe === 'ogrenci') {
+                user.aktif = true;
+                this.students.push(user);
+              } else if (user.rutbe === 'ogretmen') {
+                user.aktif = true;
+                this.teachers.push(user);
+              }
+            }
+            alert('Kullanıcı başarıyla onaylandı.');
+          } else {
+            alert(`Hata: ${response.message}`);
+          }
+        },
+        error: (error) => {
+          console.error('Kullanıcı onaylanırken hata oluştu:', error);
+          alert('Kullanıcı onaylanırken bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+      });
+  }
+
+  // Kullanıcı reddetme işlemi
+  rejectUser(id: number): void {
+    if (confirm('Bu kullanıcıyı reddetmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) {
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+
+      this.http
+        .delete(`./server/api/ogrenci_sil.php/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              // Reddedilen kullanıcıyı listeden kaldır
+              this.newUsers = this.newUsers.filter(user => user.id !== id);
+              alert('Kullanıcı başarıyla reddedildi.');
+            } else {
+              alert(`Hata: ${response.message}`);
+            }
+          },
+          error: (error) => {
+            console.error('Kullanıcı reddedilirken hata oluştu:', error);
+            alert('Kullanıcı reddedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+          }
+        });
+    }
+  }
 
   loadUsers(): void {
     this.isLoading = true;
