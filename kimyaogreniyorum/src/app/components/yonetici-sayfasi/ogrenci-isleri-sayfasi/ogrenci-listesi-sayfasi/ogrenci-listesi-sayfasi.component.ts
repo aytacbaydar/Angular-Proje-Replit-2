@@ -60,28 +60,37 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
     this.isLoading = true;
     // Node.js API'sine istek gönder
     this.http
-      .get<any>('/api/students', {
+      .get<any>('./server/api/ogrenci_bilgileri.php', {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe({
         next: (response) => {
           if (response.success) {
+            // API tüm kullanıcıları döndürüyor varsayalım
+            const users = Array.isArray(response.data) ? response.data : [response.data];
+            
             // Kullanıcıları rütbelerine göre filtrele
-            this.students = response.data.filter(
+            this.students = users.filter(
               (user: User) => user.rutbe === 'ogrenci'
             );
-            this.teachers = response.data.filter(
+            this.teachers = users.filter(
               (user: User) => user.rutbe === 'ogretmen'
             );
-            this.newUsers = response.data.filter(
+            this.newUsers = users.filter(
               (user: User) => user.rutbe === 'yeni'
             );
+            
+            console.log('Yüklenen öğrenciler:', this.students);
+          } else {
+            console.error('API yanıtı başarısız:', response);
           }
           this.isLoading = false;
         },
         error: (error) => {
+          console.error('API hatası:', error);
           // Hata durumunda sadece loading durumunu güncelle
           this.isLoading = false;
+          alert('Öğrenci verisi yüklenirken bir hata oluştu: ' + (error.message || 'Bilinmeyen bir hata'));
         },
       });
   }
