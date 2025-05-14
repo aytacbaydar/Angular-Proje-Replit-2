@@ -1,0 +1,260 @@
+PS D:\Web Sayfalarım\Template\Angular-Proje-Replit-2\kimyaogreniyorum> ng build
+Application bundle generation failed. [1.406 seconds]
+
+X [ERROR] TS2459: Module '"./components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component"' declares 'OgrenciListesiSayfasiComponent' locally, but it is not exported. [plugin angular-compiler]
+
+    src/app/app-routing.module.ts:4:9:
+      4 │ import { OgrenciListesiSayfasiComponent } from './components/yoneti...
+        ╵          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  'OgrenciListesiSayfasiComponent' is declared here.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:33:6:
+      33 │ class OgrenciListesiSayfasiComponent implements OnInit {
+         ╵       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-996002: 'YoneticiSayfasiModule' does not appear to be an NgModule class. [plugin angular-compiler]
+
+    src/app/app.module.ts:33:4:
+      33 │     YoneticiSayfasiModule
+         ╵     ~~~~~~~~~~~~~~~~~~~~~
+
+  Is it missing an @NgModule annotation?
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:33:13:
+      33 │ export class YoneticiSayfasiModule {}
+         ╵              ~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'formGroup' since it isn't a known property of 'form'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.html:16:14:
+      16 │         <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+         ╵               ~~~~~~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciDetaySayfasiComponent.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.ts:9:15:
+      9 │   templateUrl: './ogrenci-detay-sayfasi.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG1: Object is possibly 'null'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.html:34:75:
+      34 │ ...badge bg-success">{{ selectedFile.name }} ({{ (selectedFile.size /
+         ╵                                      ~~~~
+
+  Error occurs in the template of component OgrenciDetaySayfasiComponent.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.ts:9:15:
+      9 │   templateUrl: './ogrenci-detay-sayfasi.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG1: Object is possibly 'null'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.html:34:101:
+      34 │ ...badge bg-success">{{ selectedFile.name }} ({{ (selectedFile.size /
+         ╵                                                                ~~~~
+
+  Error occurs in the template of component OgrenciDetaySayfasiComponent.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.ts:9:15:
+      9 │   templateUrl: './ogrenci-detay-sayfasi.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngValue' since it isn't a known property of 'option'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.html:76:48:
+      76 │ ...                           <option [ngValue]="true">Aktif</option>
+         ╵                                       ~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciDetaySayfasiComponent.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.ts:9:15:
+      9 │   templateUrl: './ogrenci-detay-sayfasi.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] NG8002: Can't bind to 'ngValue' since it isn't a known property of 'option'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.html:77:48:
+      77 │ ...                          <option [ngValue]="false">Pasif</option>
+         ╵                                      ~~~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component OgrenciDetaySayfasiComponent.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component.ts:9:15:
+      9 │   templateUrl: './ogrenci-detay-sayfasi.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS1206: Decorators are not valid here. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:25:0:
+      25 │ @Component({
+         ╵ ^
+
+
+X [ERROR] Expected identifier but found "{"
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:31:14:
+      31 │ export import { User } from '../../../../models/user.model';
+         ╵               ^
+
+
+X [ERROR] TS2307: Cannot find module '../../../../models/user.model' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:31:28:
+      31 │ export import { User } from '../../../../models/user.model';
+         ╵                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-992007: Class is using Angular features but is not decorated. Please add an explicit Angular decorator. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:33:6:
+      33 │ class OgrenciListesiSayfasiComponent implements OnInit {
+         ╵       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:51:2:
+      51 │   deleteStudent(id: number): void {
+         ╵   ~~~~~~~~~~~~~
+
+
+X [ERROR] TS2339: Property 'toastr' does not exist on type 'OgrenciListesiSayfasiComponent'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:72:17:
+      72 │             this.toastr.success('Öğrenci başarıyla silindi.');
+         ╵                  ~~~~~~
+
+
+X [ERROR] TS2339: Property 'toastr' does not exist on type 'OgrenciListesiSayfasiComponent'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:74:17:
+      74 │             this.toastr.error(`Hata: ${response.error}`);
+         ╵                  ~~~~~~
+
+
+X [ERROR] TS2339: Property 'toastr' does not exist on type 'OgrenciListesiSayfasiComponent'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:89:21:
+      89 │                 this.toastr.success('Öğrenci başarıyla silindi...
+         ╵                      ~~~~~~
+
+
+X [ERROR] TS2339: Property 'toastr' does not exist on type 'OgrenciListesiSayfasiComponent'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:91:21:
+      91 │                 this.toastr.error(`Hata: ${response.error}`);
+         ╵                      ~~~~~~
+
+
+X [ERROR] TS2339: Property 'toastr' does not exist on type 'OgrenciListesiSayfasiComponent'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:96:19:
+      96 │               this.toastr.error('Öğrenci silinirken bir hata olu...
+         ╵                    ~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:105:2:
+      105 │   deleteTeacher(id: number): void {
+          ╵   ~~~~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:138:2:
+      138 │   approveUser(id: number): void {
+          ╵   ~~~~~~~~~~~
+
+
+X [ERROR] TS2304: Cannot find name 'HttpHeaders'. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:147:24:
+      147 │     const headers = new HttpHeaders({
+          ╵                         ~~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:188:2:
+      188 │   rejectUser(id: number): void {
+          ╵   ~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:265:2:
+      265 │   deleteStudent(id: number): void {
+          ╵   ~~~~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:302:2:
+      302 │   deleteTeacher(id: number): void {
+          ╵   ~~~~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:340:4:
+      340 │     approveUser(userId: number) {
+          ╵     ~~~~~~~~~~~
+
+
+X [ERROR] TS2393: Duplicate function implementation. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:384:4:
+      384 │     rejectUser(userId: number) {
+          ╵     ~~~~~~~~~~
+
+
+X [ERROR] NG8001: 'router-outlet' is not a known element:
+1. If 'router-outlet' is an Angular component, then verify that it is part of this module.
+2. If 'router-outlet' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/yonetici-index-sayfasi/yonetici-index-sayfasi.component.html:89:12:
+      89 │             <router-outlet></router-outlet>
+         ╵             ~~~~~~~~~~~~~~~
+
+  Error occurs in the template of component YoneticiIndexSayfasiComponent.
+
+    src/app/components/yonetici-sayfasi/yonetici-index-sayfasi/yonetici-index-sayfasi.component.ts:8:15:
+      8 │   templateUrl: './yonetici-index-sayfasi.component.html',
+        ╵                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS2459: Module '"./ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component"' declares 'OgrenciListesiSayfasiComponent' locally, but it is not exported. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:9:9:
+      9 │ import { OgrenciListesiSayfasiComponent } from './ogrenci-isleri-sa...
+        ╵          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  'OgrenciListesiSayfasiComponent' is declared here.
+
+    src/app/components/yonetici-sayfasi/ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component.ts:33:6:
+      33 │ class OgrenciListesiSayfasiComponent implements OnInit {
+         ╵       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+X [ERROR] TS-991010: Value at position 0 in the NgModule.declarations of YoneticiSayfasiModule is not a reference
+  Value could not be determined statically. [plugin angular-compiler]
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:14:16:
+      14 │   declarations: [
+         ╵                 ^
+
+  Unknown reference.
+
+    src/app/components/yonetici-sayfasi/yonetici-sayfasi.module.ts:15:4:
+      15 │     OgrenciListesiSayfasiComponent,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
