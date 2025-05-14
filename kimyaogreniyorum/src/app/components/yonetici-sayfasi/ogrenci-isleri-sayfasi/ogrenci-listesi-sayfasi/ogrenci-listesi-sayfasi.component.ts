@@ -104,7 +104,7 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
       this.isLoading = true;
       // Node.js API'sine istek gönder
       this.http
-        .delete<any>(`/api/students/${id}`, {
+        .delete<any>(`./server/api/ogrenci_sil.php/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .subscribe({
