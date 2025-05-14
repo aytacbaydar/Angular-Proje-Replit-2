@@ -48,7 +48,6 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
 
   loadUsers(): void {
     this.isLoading = true;
-
     // LocalStorage veya sessionStorage'dan token'ı al
     let token = '';
     const userStr =
@@ -58,9 +57,10 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
       token = user.token || '';
     }
 
-    // Tüm kullanıcıları getir
+    this.isLoading = true;
+    // Node.js API'sine istek gönder
     this.http
-      .get<any>('./server/api/yonetici_bilgileri.php', {
+      .get<any>('/api/students', {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe({
@@ -88,5 +88,41 @@ export class OgrenciListesiSayfasiComponent implements OnInit {
 
   editStudent(id: number): void {
     this.router.navigate(['/yonetici-sayfasi/ogrenci-detay-sayfasi', id]);
+  }
+
+  deleteStudent(id: number): void {
+    if (confirm('Bu öğrenciyi silmek istediğinizden emin misiniz?')) {
+      // LocalStorage veya sessionStorage'dan token'ı al
+      let token = '';
+      const userStr =
+        localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        token = user.token || '';
+      }
+
+      this.isLoading = true;
+      // Node.js API'sine istek gönder
+      this.http
+        .delete<any>(`/api/students/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              alert('Öğrenci başarıyla silindi.');
+              // Listeyi yeniden yükle
+              this.loadUsers();
+            } else {
+              alert('Hata: ' + (response.error || 'Bilinmeyen bir hata oluştu.'));
+              this.isLoading = false;
+            }
+          },
+          error: (error) => {
+            alert('Bağlantı hatası: ' + (error.message || 'Bilinmeyen bir hata oluştu.'));
+            this.isLoading = false;
+          },
+        });
+    }
   }
 }
