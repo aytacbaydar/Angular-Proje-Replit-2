@@ -193,7 +193,11 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button (click)="approveUser(user.id)" class="btn btn-sm btn-outline-success btn-sm" title="Onayla">
+                                        <a [routerLink]="['/yonetici-sayfasi/ogrenci-detay-sayfasi', user.id]" 
+                                           class="btn btn-sm btn-outline-primary btn-sm" title="Detaylar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button (click)="approveUser(user.id)" class="btn btn-sm btn-outline-success btn-sm" title="Hızlı Onayla">
                                             <i class="bi bi-check-circle"></i>
                                         </button>
                                         <button (click)="rejectUser(user.id)" class="btn btn-sm btn-outline-danger btn-sm" title="Reddet">
