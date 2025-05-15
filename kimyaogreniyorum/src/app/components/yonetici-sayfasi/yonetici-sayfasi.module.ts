@@ -7,6 +7,7 @@ import { AppRoutingModule } from '../../app-routing.module';
 import { YoneticiIndexSayfasiComponent } from './yonetici-index-sayfasi/yonetici-index-sayfasi.component';
 import { OgrenciDetaySayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci-detay-sayfasi/ogrenci-detay-sayfasi.component';
 import { OgrenciListesiSayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci-listesi-sayfasi/ogrenci-listesi-sayfasi.component';
+import { OgrenciAnalizSayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci-analiz-sayfasi/ogrenci-analiz-sayfasi.component';
 
 
 
@@ -15,6 +16,7 @@ import { OgrenciListesiSayfasiComponent } from './ogrenci-isleri-sayfasi/ogrenci
     OgrenciListesiSayfasiComponent,
     OgrenciDetaySayfasiComponent,
     YoneticiIndexSayfasiComponent,
+    OgrenciAnalizSayfasiComponent,
   ],
   imports: [
     CommonModule,
